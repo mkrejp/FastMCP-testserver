@@ -215,5 +215,30 @@ async def dashboard_api(request: Request) -> JSONResponse:
         return JSONResponse({"error": str(exc)}, status_code=500)
 
 
+def http_port() -> int:
+    """Return the TCP port the public HTTP server should bind.
+
+    Railway injects ``PORT`` and sends the public domain to that same port.
+    The production domain targets 8080, which is also the local default.
+    """
+    raw_port = os.environ.get("PORT", "8080")
+    try:
+        port = int(raw_port)
+    except ValueError as exc:
+        raise RuntimeError(f"PORT must be an integer, got {raw_port!r}.") from exc
+    if port < 1 or port > 65535:
+        raise RuntimeError(f"PORT must be between 1 and 65535, got {port}.")
+    return port
+
+
+def serve_http() -> None:
+    """Serve the dashboard and MCP endpoint on all network interfaces.
+
+    Binding to ``0.0.0.0`` is required so Railway's proxy can reach the
+    process. ``mcp.run()`` without arguments stays on stdio for ``run-mcp``.
+    """
+    mcp.run(transport="http", host="0.0.0.0", port=http_port())
+
+
 if __name__ == "__main__":
-    mcp.run()
+    serve_http()
