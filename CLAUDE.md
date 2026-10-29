@@ -1,0 +1,1 @@
+Follow the shared repository instructions in `AGENTS.md`. For setup, architecture, and security details, read `README.md`.

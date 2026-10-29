@@ -1,0 +1,18 @@
+{
+  "managed_servers": {
+    "weather-service": {
+      "command": "uv",
+      "args": ["run", "weather-mcp-server"],
+      "env": {
+        "WEATHER_API_KEY": "${WEATHER_API_KEY}"
+      }
+    },
+    "github-service": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}

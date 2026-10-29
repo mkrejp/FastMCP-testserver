@@ -1,0 +1,8 @@
+---
+description: Shared project instructions for the MCP aggregator
+alwaysApply: true
+---
+
+@AGENTS.md
+
+Use `README.md` for setup and architecture details.
