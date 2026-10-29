@@ -94,6 +94,24 @@ class RoutingTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("host-secret", json.dumps(data))
         self.assertNotIn("inline-secret", json.dumps(data))
 
+    def test_http_entrypoint_listens_on_all_interfaces(self) -> None:
+        """The process Railway starts must serve HTTP on the injected port."""
+        with (
+            patch.dict(os.environ, {"PORT": "8080"}),
+            patch.object(server.mcp, "run") as run,
+        ):
+            server.serve_http()
+
+        run.assert_called_once_with(transport="http", host="0.0.0.0", port=8080)
+
+    def test_http_port_rejects_non_numeric_value(self) -> None:
+        """A bad PORT value fails before the server tries to bind."""
+        with (
+            patch.dict(os.environ, {"PORT": "http"}),
+            self.assertRaisesRegex(RuntimeError, "PORT must be an integer"),
+        ):
+            server.http_port()
+
     async def test_rejects_unconfigured_server(self) -> None:
         self.write_config({"weather-service": {"command": "uv"}})
 
