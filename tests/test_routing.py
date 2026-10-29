@@ -17,6 +17,8 @@ class RoutingTests(unittest.IsolatedAsyncioTestCase):
         self.config_patcher = patch.object(server, "CONFIG_PATH", self.config_path)
         self.config_patcher.start()
         self.addCleanup(self.config_patcher.stop)
+        with server.STATS_LOCK:
+            server.SERVER_STATS.clear()
 
     def write_config(self, managed_servers: dict[str, object]) -> None:
         self.config_path.write_text(
@@ -67,6 +69,30 @@ class RoutingTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(transport_options["env"]["WEATHER_API_KEY"], "test-key")
         client.call_tool.assert_awaited_once_with("get_forecast", {"city": "Reykjavik"})
         self.assertEqual(result, downstream_result)
+        stats = server.dashboard_data()["servers"][0]["stats"]
+        self.assertEqual(stats["calls"], 1)
+        self.assertEqual(stats["successes"], 1)
+        self.assertEqual(stats["failures"], 0)
+
+    def test_dashboard_hides_environment_values(self) -> None:
+        self.write_config(
+            {
+                "github-service": {
+                    "command": "npx",
+                    "args": ["--token", "inline-secret"],
+                    "env": {"GITHUB_TOKEN": "${GITHUB_TOKEN}"},
+                }
+            }
+        )
+
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "host-secret"}):
+            data = server.dashboard_data()
+
+        server_row = data["servers"][0]
+        self.assertEqual(server_row["args"], ["--token", "[redacted]"])
+        self.assertEqual(server_row["env"], [{"name": "GITHUB_TOKEN", "configured": True}])
+        self.assertNotIn("host-secret", json.dumps(data))
+        self.assertNotIn("inline-secret", json.dumps(data))
 
     async def test_rejects_unconfigured_server(self) -> None:
         self.write_config({"weather-service": {"command": "uv"}})
