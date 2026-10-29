@@ -6,10 +6,10 @@ A single FastMCP host that starts configured MCP servers over stdio and forwards
 
 ```sh
 uv sync
-uv run fastmcp dev inspector server.py
+uv run fastmcp run server.py --transport http --host 0.0.0.0 --port 8000
 ```
 
-FastMCP Inspector opens a local UI for connecting to the aggregator. The same server can run directly with `uv run run-mcp`.
+Open the forwarded port 8000 in Codespaces for the live dashboard. The MCP endpoint is available at `/mcp`. Keep the forwarded port private; the dashboard and MCP endpoint do not add authentication. The standard input/output server can still run directly with `uv run run-mcp`.
 
 ## Routing Configuration
 
@@ -27,6 +27,10 @@ Set referenced secrets in the Codespace environment before routing a call. Missi
 - `route_mcp_call(server_name, tool_name, arguments)` starts the selected server, calls its named MCP tool over stdio, and returns the downstream MCP result.
 
 Each routed call starts a fresh downstream process. Only trusted maintainers should edit the routing config: its commands are executed on the host running this aggregator.
+
+## Dashboard
+
+The dashboard displays configured launch commands, environment-variable names and presence, plus in-memory call counts and latency. It never displays environment values and redacts common credential arguments. Statistics reset when the aggregator restarts; the UI refreshes every five seconds.
 
 ## Development
 
