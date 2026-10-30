@@ -2,6 +2,9 @@
 
 A single FastMCP host that starts configured MCP servers over stdio and forwards tool calls to them.
 
+- [Solution architecture](docs/ARCHITECTURE.md) — purpose, components, MCP surface, runtime flow, Railway deployment, security.
+- [Connectivity](docs/CONNECTIVITY.md) — end-to-end network paths, ports, protocols, trust boundaries, and connection inventory.
+
 ## Run
 
 ```sh

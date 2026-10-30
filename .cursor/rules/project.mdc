@@ -5,4 +5,4 @@ alwaysApply: true
 
 @AGENTS.md
 
-Use `README.md` for setup and architecture details.
+Use `README.md` for setup. See `docs/ARCHITECTURE.md` and `docs/CONNECTIVITY.md` for architecture.
