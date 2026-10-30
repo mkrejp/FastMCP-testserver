@@ -19,7 +19,7 @@ Edit `mcp_routing_config.json`. Each entry under `managed_servers` has:
 - `args`: argv list passed directly to that executable; no shell is used
 - `env`: string-to-string environment overrides; `${VARIABLE}` references are resolved from the host environment
 
-Set referenced secrets in the Codespace environment before routing a call. Missing variables fail with a clear error; secret values are never written to the config. The sample server commands are placeholders and must be replaced with actual MCP server commands and arguments.
+Set referenced secrets in the Codespace environment before routing a call. Missing variables fail with a clear error; secret values are never written to the config. The `wikidata-monuments`, `openstreetmap-overpass`, and `open-meteo-weather` entries run the lightweight public-API bridges in `servers/`. They require no API keys. The Wikidata and Overpass bridges identify themselves with a User-Agent header; Overpass searches a fixed 1 km radius, and nearby Wikidata searches are limited to 100 km. Each bridge returns API results as JSON text in an MCP text result. The original `weather-service` and `github-service` entries are examples and require their configured downstream commands and credentials.
 
 ## Aggregator Tools
 
