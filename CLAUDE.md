@@ -1,1 +1,1 @@
-Follow the shared repository instructions in `AGENTS.md`. For setup, architecture, and security details, read `README.md`.
+Follow the shared repository instructions in `AGENTS.md`. For setup and security details, read `README.md`. For architecture and network connectivity, read `docs/ARCHITECTURE.md` and `docs/CONNECTIVITY.md`.
