@@ -179,6 +179,7 @@ async def route_mcp_call(
             command=spec["command"],
             args=spec.get("args", []),
             env=process_env,
+            keep_alive=False,
         )
 
         async with Client(transport) as client:

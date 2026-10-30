@@ -67,6 +67,7 @@ class RoutingTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(transport_options["command"], "uv")
         self.assertEqual(transport_options["args"], ["run", "weather-mcp-server"])
         self.assertEqual(transport_options["env"]["WEATHER_API_KEY"], "test-key")
+        self.assertFalse(transport_options["keep_alive"])
         client.call_tool.assert_awaited_once_with("get_forecast", {"city": "Reykjavik"})
         self.assertEqual(result, downstream_result)
         stats = server.dashboard_data()["servers"][0]["stats"]

@@ -7,6 +7,21 @@
         "WEATHER_API_KEY": "${WEATHER_API_KEY}"
       }
     },
+    "wikidata-monuments": {
+      "command": "uv",
+      "args": ["run", "python", "servers/wikidata_monuments.py"],
+      "env": {}
+    },
+    "openstreetmap-overpass": {
+      "command": "uv",
+      "args": ["run", "python", "servers/openstreetmap_overpass.py"],
+      "env": {}
+    },
+    "open-meteo-weather": {
+      "command": "uv",
+      "args": ["run", "python", "servers/open_meteo_weather.py"],
+      "env": {}
+    },
     "github-service": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
