@@ -36,10 +36,15 @@ class PublicApiServerTests(unittest.IsolatedAsyncioTestCase):
     async def test_overpass_amenity_search_builds_bounded_query(self) -> None:
         client, _ = self.make_client({"elements": []})
 
-        with patch.object(openstreetmap_overpass.httpx, "AsyncClient", return_value=client):
+        with patch.object(
+            openstreetmap_overpass.httpx,
+            "AsyncClient",
+            return_value=client,
+        ) as factory:
             result = await openstreetmap_overpass.get_amenities_nearby(51.5, -0.1, "cafe")
 
         self.assertEqual(json.loads(result), {"elements": []})
+        self.assertIn("User-Agent", factory.call_args.kwargs["headers"])
         query = client.post.await_args.kwargs["data"]["data"]
         self.assertIn("around:1000,51.5,-0.1", query)
         self.assertIn('["amenity"="cafe"]', query)
@@ -51,10 +56,15 @@ class PublicApiServerTests(unittest.IsolatedAsyncioTestCase):
     async def test_open_meteo_requests_current_and_recent_historical_weather(self) -> None:
         client, _ = self.make_client({"current": {"temperature_2m": 10}})
 
-        with patch.object(open_meteo_weather.httpx, "AsyncClient", return_value=client):
+        with patch.object(
+            open_meteo_weather.httpx,
+            "AsyncClient",
+            return_value=client,
+        ) as factory:
             result = await open_meteo_weather.get_historical_or_current_weather(40, -70)
 
         self.assertEqual(json.loads(result), {"current": {"temperature_2m": 10}})
+        self.assertIn("User-Agent", factory.call_args.kwargs["headers"])
         params = client.get.await_args.kwargs["params"]
         self.assertEqual(params["past_days"], 7)
         self.assertEqual(params["forecast_days"], 1)
